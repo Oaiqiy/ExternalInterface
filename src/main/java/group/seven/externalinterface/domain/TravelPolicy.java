@@ -14,10 +14,10 @@ public class TravelPolicy {
     @Id
     private Integer adcode;
     @Column(columnDefinition = "TEXT")
-    private String back_policy;
-    private String back_policy_date;
-    private String leave_policy;
+    private String backPolicy;
+    private String backPolicyDate;
+    private String leavePolicy;
     @Column(columnDefinition = "TEXT")
-    private String leave_policy_date;
-    private String stay_info;
+    private String leavePolicyDate;
+    private String stayInfo;
 }

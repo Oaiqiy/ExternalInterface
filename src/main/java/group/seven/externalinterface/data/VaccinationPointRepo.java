@@ -10,4 +10,5 @@ import java.util.List;
 public interface VaccinationPointRepo extends CrudRepository<VaccinationPoint,Long> {
     List<VaccinationPoint> getVaccinationPointsByAdcode(Integer adcode, Pageable pageable);
     List<VaccinationPoint> findAll(Pageable pageable);
+    List<VaccinationPoint> findByAdcode(Integer adcode);
 }

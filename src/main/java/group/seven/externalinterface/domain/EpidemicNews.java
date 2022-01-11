@@ -12,6 +12,7 @@ import javax.persistence.Table;
 @Table(name = "epidemicnews")
 public class EpidemicNews {
     @Id
+    private Long index;
     private Long pubDate;
     private String title;
     @Column(columnDefinition = "TEXT")

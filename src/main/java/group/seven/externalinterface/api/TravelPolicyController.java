@@ -3,6 +3,7 @@ package group.seven.externalinterface.api;
 import group.seven.externalinterface.data.TravelPolicyRepo;
 import group.seven.externalinterface.domain.TravelPolicy;
 import lombok.AllArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TravelPolicyController {
     private TravelPolicyRepo repo;
+    private RedisTemplate<String,Object> objectRedisTemplate;
 
     /**
      * /external/travel
@@ -32,11 +34,12 @@ public class TravelPolicyController {
      * @param to to adcode
      * @return two travel policies
      */
+
     @GetMapping("/travel/route")
     public List<TravelPolicy> route(Integer from,Integer to){
         List<TravelPolicy> result = new LinkedList<>();
-        result.add(repo.getTravelPolicyByAdcode(from));
-        result.add(repo.getTravelPolicyByAdcode(to));
+        result.add((TravelPolicy) objectRedisTemplate.opsForValue().get(from.toString()));
+        result.add((TravelPolicy) objectRedisTemplate.opsForValue().get(to.toString()));
         return result;
     }
 

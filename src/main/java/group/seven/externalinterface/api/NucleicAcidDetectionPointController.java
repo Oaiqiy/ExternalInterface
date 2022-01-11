@@ -4,18 +4,21 @@ import group.seven.externalinterface.data.NucleicAcidDetectionPointRepo;
 import group.seven.externalinterface.domain.NucleicAcidDetectionPoint;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.awt.print.Pageable;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/external")
 public class NucleicAcidDetectionPointController {
     private NucleicAcidDetectionPointRepo repo;
+    private RedisTemplate<String,Object> objectRedisTemplate;
 
     /**
      * /external/nucleic
@@ -25,8 +28,8 @@ public class NucleicAcidDetectionPointController {
      * @return List of nucleic acid detection points
      */
     @GetMapping("/nucleic")
-    public List<NucleicAcidDetectionPoint> getPoints(Integer adcode, Integer count, Integer page){
-        return repo.getNucleicAcidDetectionPointsByAdcode(adcode,  PageRequest.of(page,count));
+    public Set<Object> getPoints(Integer adcode, Integer count, Integer page){
+        return objectRedisTemplate.opsForZSet().range(adcode+":n",count*page,count*(page+1)-1);
     }
 
     /**

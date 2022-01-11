@@ -5,8 +5,16 @@ spring:
     username: ooad
     password: 2022Ooad
 
+  redis:
+    host: 119.3.174.24
+    port: 6000
+
   jpa:
     hibernate:
       ddl-auto: none
 server:
   port: 978
+
+external:
+  python-path: c:\\Users\\Dove\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe
+  if-init: false
