@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://rm-2ze4i1r57b5lvvhv61o.mysql.rds.aliyuncs.com/ooad
+    username: ooad
+    password: 2022Ooad
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+server:
+  port: 978
