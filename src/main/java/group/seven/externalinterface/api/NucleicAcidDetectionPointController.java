@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -29,7 +30,10 @@ public class NucleicAcidDetectionPointController {
      */
     @GetMapping("/nucleic")
     public Set<Object> getPoints(Integer adcode, Integer count, Integer page){
-        return objectRedisTemplate.opsForZSet().range(adcode+":n",count*page,count*(page+1)-1);
+        var points = objectRedisTemplate.opsForZSet().range(adcode+":n",count*page,count*(page+1)-1);
+        if(points!=null)
+            return points;
+        return repo.getNucleicAcidDetectionPointsByAdcode(adcode,PageRequest.of(page,count)).stream().map(p->(Object) p).collect(Collectors.toSet());
     }
 
     /**

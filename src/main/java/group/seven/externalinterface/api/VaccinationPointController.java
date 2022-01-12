@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/external")
@@ -30,8 +31,12 @@ public class VaccinationPointController {
      */
     @GetMapping("/vaccination")
     public Set<Object> getPoints(Integer adcode, Integer count, Integer page){
-        return objectRedisTemplate.opsForZSet().range(adcode.toString()+":v",count*page,count*(page+1)-1);
-        //return repo.getVaccinationPointsByAdcode(adcode,PageRequest.of(page,count));
+
+
+        var points = objectRedisTemplate.opsForZSet().range(adcode.toString()+":v",count*page,count*(page+1)-1);
+        if (points!=null)
+            return points;
+        return repo.getVaccinationPointsByAdcode(adcode,PageRequest.of(page,count)).stream().collect(Collectors.toSet());
 
     }
 
