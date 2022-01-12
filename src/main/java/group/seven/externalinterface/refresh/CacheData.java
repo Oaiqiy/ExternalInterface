@@ -5,16 +5,14 @@ import group.seven.externalinterface.domain.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,13 +75,18 @@ public class CacheData {
                 }
 
                 log.info("init begin");
+
+                objectRedisTemplate.delete("news");
                 stringRedisTemplate.opsForValue().set("news:count","0");
-                epidemicDataCache();
+                stringRedisTemplate.opsForValue().set("news:index","0");
+                //epidemicDataCache();
                 epidemicNewsCache();
-                nucleicAcidDetectionPointCache();
+                //nucleicAcidDetectionPointCache();
                 travelPolicyCache();
-                vaccinationPointCache();
+                //vaccinationPointCache();
+
                 log.info("init end");
+
             }
         };
     }
@@ -94,12 +97,13 @@ public class CacheData {
     }
 
     public void epidemicNewsCache(){
-        Long count = Long.valueOf(stringRedisTemplate.opsForValue().get("news:count"));
-        List<EpidemicNews> list = epidemicNewsRepo.findEpidemicNewsByIndexGreaterThan(count);
-        count += list.size();
-        objectRedisTemplate.opsForList().leftPushAll("news",list);
+        Long index = Long.valueOf(stringRedisTemplate.opsForValue().get("news:index"));
+        List<EpidemicNews> list = epidemicNewsRepo.findEpidemicNewsByIndexGreaterThanOrderByIndexAsc(index);
+        index = list.get(list.size()-1).getIndex();
+        objectRedisTemplate.opsForList().leftPushAll("news", list.stream().map(p->(Object) p).collect(Collectors.toList()));
+
         objectRedisTemplate.opsForList().trim("news",0,99);
-        stringRedisTemplate.opsForValue().set("news:count",count.toString());
+        stringRedisTemplate.opsForValue().set("news:count",String.valueOf(epidemicNewsRepo.count()));
     }
 
     public void nucleicAcidDetectionPointCache(){
@@ -115,9 +119,14 @@ public class CacheData {
     }
 
     public void travelPolicyCache(){
-        for(var adcode : adcodes){
-            TravelPolicy travelPolicy = travelPolicyRepo.getTravelPolicyByAdcode(adcode);
-            objectRedisTemplate.opsForValue().set(adcode+":t",travelPolicy);
+        int page =0;
+        List<TravelPolicy> travelPolicies = travelPolicyRepo.findAll(PageRequest.of(page,100));
+        while (travelPolicies!=null){
+            for(var policy:travelPolicies){
+                objectRedisTemplate.opsForValue().set(policy.getAdcode()+":t",policy);
+            }
+            page++;
+            travelPolicies = travelPolicyRepo.findAll(PageRequest.of(page,100));
         }
     }
 

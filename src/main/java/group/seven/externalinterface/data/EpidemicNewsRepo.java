@@ -10,5 +10,5 @@ import java.util.List;
 public interface EpidemicNewsRepo extends CrudRepository<EpidemicNews,Long> {
 
     Page<EpidemicNews> findAll(Pageable pageable);
-    List<EpidemicNews> findEpidemicNewsByIndexGreaterThan(Long low);
+    List<EpidemicNews> findEpidemicNewsByIndexGreaterThanOrderByIndexAsc(Long low);
 }

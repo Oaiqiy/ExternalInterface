@@ -38,8 +38,8 @@ public class TravelPolicyController {
     @GetMapping("/travel/route")
     public List<TravelPolicy> route(Integer from,Integer to){
         List<TravelPolicy> result = new LinkedList<>();
-        result.add((TravelPolicy) objectRedisTemplate.opsForValue().get(from.toString()));
-        result.add((TravelPolicy) objectRedisTemplate.opsForValue().get(to.toString()));
+        result.add((TravelPolicy) objectRedisTemplate.opsForValue().get(from.toString()+":t"));
+        result.add((TravelPolicy) objectRedisTemplate.opsForValue().get(to.toString()+":t"));
         return result;
     }
 

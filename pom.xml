@@ -10,7 +10,7 @@
     </parent>
     <groupId>group.seven</groupId>
     <artifactId>ExternalInterface</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>ExternalInterface</name>
     <description>ExternalInterface</description>
     <properties>

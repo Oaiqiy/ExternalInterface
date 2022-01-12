@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -30,10 +31,10 @@ public class EpidemicNewsController {
      */
     @GetMapping("/epidemic/news")
     public List<Object> getNews(Integer count, Integer page){
-        if(count*(page-1) > 100)
-            return (List<Object>) (List<?>) epidemicNewsRepo.findAll(PageRequest.of(page,count)).toSet();
+        if(count*(page+1) > 100)
+            return  epidemicNewsRepo.findAll(PageRequest.of(page,count)).toList().stream().map(p->(Object) p).collect(Collectors.toList());
         else
-            return objectRedisTemplate.opsForList().range("news",count*page,count*(page+1)-1);
+            return  objectRedisTemplate.opsForList().range("news",count*page,count*(page+1)-1);
     }
 
     /**

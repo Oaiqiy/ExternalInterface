@@ -17,4 +17,4 @@ server:
 
 external:
   python-path: c:\\Users\\Dove\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe
-  if-init: false
+  if-init: true
