@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/external")
-public class NucleicAcidDetectionPointController {
+public abstract class NucleicAcidDetectionPointController {
     private NucleicAcidDetectionPointRepo repo;
     private RedisTemplate<String,Object> objectRedisTemplate;
 
