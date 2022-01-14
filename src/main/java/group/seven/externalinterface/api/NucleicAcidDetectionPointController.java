@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/external")
-public abstract class NucleicAcidDetectionPointController {
+public class NucleicAcidDetectionPointController {
     private NucleicAcidDetectionPointRepo repo;
     private RedisTemplate<String,Object> objectRedisTemplate;
 

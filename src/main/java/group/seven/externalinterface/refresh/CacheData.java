@@ -75,15 +75,14 @@ public class CacheData {
                 }
 
                 log.info("init begin");
-
                 objectRedisTemplate.delete("news");
                 stringRedisTemplate.opsForValue().set("news:count","0");
                 stringRedisTemplate.opsForValue().set("news:index","0");
-                //epidemicDataCache();
+//                epidemicDataCache();
                 epidemicNewsCache();
-                //nucleicAcidDetectionPointCache();
-                travelPolicyCache();
-                //vaccinationPointCache();
+//                nucleicAcidDetectionPointCache();
+//                travelPolicyCache();
+//                vaccinationPointCache();
 
                 log.info("init end");
 
@@ -104,6 +103,8 @@ public class CacheData {
 
         objectRedisTemplate.opsForList().trim("news",0,99);
         stringRedisTemplate.opsForValue().set("news:count",String.valueOf(epidemicNewsRepo.count()));
+        stringRedisTemplate.opsForValue().set("news:index",String.valueOf(index));
+
     }
 
     public void nucleicAcidDetectionPointCache(){
@@ -134,7 +135,7 @@ public class CacheData {
         for(var adcode : adcodes){
             List<VaccinationPoint> points = vaccinationPointRepo.findByAdcode(adcode);
             Set<ZSetOperations.TypedTuple<Object>> tuples = points.stream().map(p-> new DefaultTypedTuple<Object>(p,p.getIndex().doubleValue())).collect(Collectors.toSet());
-            objectRedisTemplate.delete(adcode+"v");
+            objectRedisTemplate.delete(adcode+":v");
             if(!tuples.isEmpty())
                 objectRedisTemplate.opsForZSet().add(adcode+":v",tuples);
         }
